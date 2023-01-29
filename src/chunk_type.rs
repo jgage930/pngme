@@ -1,4 +1,3 @@
-use crate::Error;
 use std::str::FromStr;
 use std::fmt;
 
@@ -8,15 +7,20 @@ pub struct ChunkType {
 }
 
 impl TryFrom<[u8; 4]> for ChunkType {
-    type Error = Error;
+    type Error = fmt::Error;
 
-    fn try_from(value: [u8; 4]) -> Result<Self, Error> {
+    fn try_from(value: [u8; 4]) -> Result<Self, fmt::Error> {
+        for byte in value.iter() {
+            if byte > &255 {
+                return Err(fmt::Error)
+            }
+        }
         Ok(Self { bytes: value })
     }
 }
 
 impl FromStr for ChunkType {
-    type Err = Error;
+    type Err = fmt::Error;
 
     fn from_str(s: &str) -> Result<Self, Self::Err> {
         let bytes = String::from(s).into_bytes();
@@ -36,7 +40,7 @@ impl fmt::Display for ChunkType {
 impl ChunkType {
 
     fn bytes(&self) -> [u8; 4] {
-        todo!();
+        self.bytes
     }
 
     fn is_valid(&self) -> bool {
