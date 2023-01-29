@@ -1,20 +1,35 @@
 use crate::Error;
+use std::str::FromStr;
 
-#[derive(Debug, Copy, Clone)]
+#[derive(Eq, PartialEq, Debug, Copy, Clone)]
 pub struct ChunkType {
     bytes: [u8; 4],
 }
 
 impl TryFrom<[u8; 4]> for ChunkType {
     type Error = Error;
+
     fn try_from(value: [u8; 4]) -> Result<Self, Error> {
         Ok(Self { bytes: value })
+    }
+}
+
+impl FromStr for ChunkType {
+    type Err = Error;
+
+    fn from_str(s: &str) -> Result<Self, Self::Err> {
+        let bytes = String::from(s).into_bytes();
+        Ok(ChunkType { bytes: bytes[0..3].try_into().unwrap() })
     }
 }
 
 impl ChunkType {
     fn bytes(&self) -> [u8; 4] {
         self.bytes
+    }
+
+    fn is_critical(&self) -> bool {
+        todo!();
     }
 }
 
