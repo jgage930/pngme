@@ -22,9 +22,16 @@ impl TryFrom<[u8; 4]> for ChunkType {
 impl FromStr for ChunkType {
     type Err = fmt::Error;
 
-    fn from_str(s: &str) -> Result<Self, Self::Err> {
-        let bytes = String::from(s).into_bytes();
-        Ok(ChunkType { bytes: bytes[0..3].try_into().unwrap() })
+    fn from_str(s: &str) -> Result<Self, fmt::Error> {
+        let chars = String::from(s).into_bytes();
+
+        if s.len() > 4 {
+            return Err(fmt::Error);
+        }
+
+        Ok(ChunkType { 
+            bytes:  chars[..].try_into().unwrap(),
+        })
     }
 
 }
