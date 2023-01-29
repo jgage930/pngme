@@ -1,8 +1,14 @@
 use std::str::{
     FromStr,
-    from_utf8,
 };
 use std::fmt;
+
+fn is_uppercase(c: char) -> bool {
+    if c >= 'A' && c <= 'Z' {
+        return true;
+    }
+    false
+}
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub struct ChunkType {
@@ -58,24 +64,19 @@ impl ChunkType {
     }
 
     fn is_critical(&self) -> bool {
-        let character = self.bytes[0] as char;
-
-        if character >= 'A' as char && character <= 'Z' as char {
-            return true;
-        }
-        false
+        is_uppercase(self.bytes[0] as char)
     }
 
     fn is_public(&self) -> bool {
-        todo!();
+        is_uppercase(self.bytes[1] as char)
     }
     
     fn is_reserved_bit_valid(&self) -> bool {
-        todo!();
+        is_uppercase(self.bytes[2] as char)
     }
 
     fn is_safe_to_copy(&self) -> bool {
-        todo!();
+        !is_uppercase(self.bytes[3] as char)
     }
 
 }
