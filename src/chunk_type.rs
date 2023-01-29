@@ -1,4 +1,7 @@
-use std::str::FromStr;
+use std::str::{
+    FromStr,
+    from_utf8,
+};
 use std::fmt;
 
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
@@ -55,7 +58,12 @@ impl ChunkType {
     }
 
     fn is_critical(&self) -> bool {
-        todo!();
+        let character = self.bytes[0] as char;
+
+        if character >= 'A' as char && character <= 'Z' as char {
+            return true;
+        }
+        false
     }
 
     fn is_public(&self) -> bool {
