@@ -1,7 +1,8 @@
 use crate::Error;
 use std::str::FromStr;
+use std::fmt;
 
-#[derive(Eq, PartialEq, Debug, Copy, Clone)]
+#[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub struct ChunkType {
     bytes: [u8; 4],
 }
@@ -21,16 +22,43 @@ impl FromStr for ChunkType {
         let bytes = String::from(s).into_bytes();
         Ok(ChunkType { bytes: bytes[0..3].try_into().unwrap() })
     }
+
 }
 
+impl fmt::Display for ChunkType {
+    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
+        todo!();
+    }
+    
+}
+
+
 impl ChunkType {
+
     fn bytes(&self) -> [u8; 4] {
-        self.bytes
+        todo!();
+    }
+
+    fn is_valid(&self) -> bool {
+        todo!();
     }
 
     fn is_critical(&self) -> bool {
         todo!();
     }
+
+    fn is_public(&self) -> bool {
+        todo!();
+    }
+    
+    fn is_reserved_bit_valid(&self) -> bool {
+        todo!();
+    }
+
+    fn is_safe_to_copy(&self) -> bool {
+        todo!();
+    }
+
 }
 
 #[cfg(test)]
