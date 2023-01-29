@@ -3,16 +3,9 @@ use std::str::{
 };
 use std::fmt;
 
-fn is_uppercase(c: char) -> bool {
-    if c >= 'A' && c <= 'Z' {
-        return true;
-    }
-    false
-}
-
 #[derive(Eq, PartialEq, Copy, Clone, Debug)]
 pub struct ChunkType {
-    bytes: [u8; 4],
+    pub bytes: [u8; 4],
 }
 
 impl TryFrom<[u8; 4]> for ChunkType {
@@ -34,15 +27,16 @@ impl FromStr for ChunkType {
     fn from_str(s: &str) -> Result<Self, fmt::Error> {
         let chars = String::from(s).into_bytes();
 
-        if s.len() > 4 {
+        let chunk = ChunkType {
+            bytes: chars.try_into().unwrap(),
+        };
+
+        if chunk.is_valid() {
+            return Ok(chunk);
+        } else {
             return Err(fmt::Error);
         }
-
-        Ok(ChunkType { 
-            bytes:  chars[..].try_into().unwrap(),
-        })
     }
-
 }
 
 impl fmt::Display for ChunkType {
@@ -59,24 +53,41 @@ impl ChunkType {
         self.bytes
     }
 
-    fn is_valid(&self) -> bool {
-        todo!();
+
+    pub fn is_valid(&self) -> bool {
+        //! Need to seperate out the checking in range and checking reversed bit
+        let mut flag = true;
+        for byte in self.bytes.iter() {
+            if *byte >= 65 && *byte <= 90 {
+                flag = true;
+            }
+
+            if *byte >= 97 && *byte <= 122 {
+                flag = true;
+            }
+        }
+
+        // if !self.is_reserved_bit_valid() {
+        //     flag = false;
+        // }
+
+        flag
     }
 
     fn is_critical(&self) -> bool {
-        is_uppercase(self.bytes[0] as char)
+        u8::is_ascii_uppercase(&self.bytes[0])
     }
 
     fn is_public(&self) -> bool {
-        is_uppercase(self.bytes[1] as char)
+        u8::is_ascii_uppercase(&self.bytes[1]) 
     }
     
     fn is_reserved_bit_valid(&self) -> bool {
-        is_uppercase(self.bytes[2] as char)
+        u8::is_ascii_uppercase(&self.bytes[2])
     }
 
     fn is_safe_to_copy(&self) -> bool {
-        !is_uppercase(self.bytes[3] as char)
+        u8::is_ascii_lowercase(&self.bytes[3])
     }
 
 }
