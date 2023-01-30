@@ -25,17 +25,17 @@ impl ChunkType {
 
     /// Returns the property state of the second byte as described in the PNG spec
     pub fn is_public(&self) -> bool {
-        todo!()
+        u8::is_ascii_uppercase(&self.bytes[1])
     }
 
     /// Returns the property state of the third byte as described in the PNG spec
     pub fn is_reserved_bit_valid(&self) -> bool {
-        todo!()
+        u8::is_ascii_uppercase(&self.bytes[2])
     }
 
     /// Returns the property state of the fourth byte as described in the PNG spec
     pub fn is_safe_to_copy(&self) -> bool {
-        todo!()
+        u8::is_ascii_lowercase(&self.bytes[3])
     }
 
     /// Returns true if the reserved byte is valid and all four bytes are represented by the characters A-Z or a-z.
