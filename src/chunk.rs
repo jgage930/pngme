@@ -59,13 +59,17 @@ impl Chunk {
         todo!();
     }
 
+    pub fn calc_crc(bytes: &[u8]) -> u32 {
+        crc::crc32::checksum_ieee(bytes)
+    }
+
     pub fn new(chunk_type: ChunkType, chunk_data: Vec<u8>) -> Self {
         let bytes_for_crc = [&chunk_type.bytes(), &chunk_data[..]].concat();
         Self {
             length: chunk_data.len() as u32,
             chunk_type,
             chunk_data,
-            crc: crc::crc32::checksum_ieee(&bytes_for_crc),
+            crc: Self::calc_crc(&bytes_for_crc),
         }
     }
 }
@@ -97,6 +101,10 @@ impl TryFrom<&[u8]> for Chunk {
         // read the crc bytes
         reader.read_exact(&mut buf)?;
         let crc = u32::from_be_bytes(buf);
+
+        if crc != Chunk::calc_crc(&[&chunk_type.bytes(), &chunk_data[..]].concat()) {
+            return Err(Box::new(fmt::Error));
+        }
 
         Ok(Self {
             length,
