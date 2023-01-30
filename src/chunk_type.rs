@@ -9,17 +9,18 @@ use crate::{Error, Result};
 #[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ChunkType {
     // Write me!
+    bytes: [u8; 4],
 }
 
 impl ChunkType {
     /// Returns the raw bytes contained in this chunk
     pub fn bytes(&self) -> [u8; 4] {
-        todo!()
+        self.bytes
     }
 
     /// Returns the property state of the first byte as described in the PNG spec
     pub fn is_critical(&self) -> bool {
-        todo!()
+        u8::is_ascii_uppercase(&self.bytes[0])
     }
 
     /// Returns the property state of the second byte as described in the PNG spec
@@ -53,7 +54,7 @@ impl TryFrom<[u8; 4]> for ChunkType {
     type Error = Error;
 
     fn try_from(bytes: [u8; 4]) -> Result<Self> {
-        todo!()
+        Ok(Self { bytes })
     }
 }
 
@@ -67,7 +68,10 @@ impl FromStr for ChunkType {
     type Err = Error;
 
     fn from_str(s: &str) -> Result<Self> {
-        todo!()
+        let bytes = s.as_bytes();
+        Ok(Self { 
+            bytes: bytes.try_into().unwrap(),
+        })
     }
 }
 
