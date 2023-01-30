@@ -67,7 +67,10 @@ impl TryFrom<[u8; 4]> for ChunkType {
 
 impl fmt::Display for ChunkType {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        todo!()
+        for b in &self.bytes {
+            write!(f, "{}", char::from(*b))?;
+        }
+        Ok(())
     }
 }
 
