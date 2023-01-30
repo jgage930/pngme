@@ -41,12 +41,19 @@ impl ChunkType {
     /// Returns true if the reserved byte is valid and all four bytes are represented by the characters A-Z or a-z.
     /// Note that this chunk type should always be valid as it is validated during construction.
     pub fn is_valid(&self) -> bool {
-        todo!()
+        let is_valid_bytes = 
+            self.bytes.iter().any(|&byte| {
+                self::ChunkType::is_valid_byte(byte)
+            });
+
+        let is_valid_reserved = self.is_reserved_bit_valid();
+
+        is_valid_bytes && is_valid_reserved
     }
 
     /// Valid bytes are represented by the characters A-Z or a-z
     pub fn is_valid_byte(byte: u8) -> bool {
-        todo!()
+        (byte >= 'A' as u8 && byte <= 'Z' as u8) || (byte >= 'a' as u8 && byte <= 'z' as u8)
     }
 }
 
@@ -68,10 +75,21 @@ impl FromStr for ChunkType {
     type Err = Error;
 
     fn from_str(s: &str) -> Result<Self> {
+        if s.len() > 4 {
+            return Err(Box::new(fmt::Error));
+        }        
+
         let bytes = s.as_bytes();
-        Ok(Self { 
+        let chunk = Self { 
             bytes: bytes.try_into().unwrap(),
-        })
+        };
+
+        for byte in chunk.bytes.iter() {
+            if !ChunkType::is_valid_byte(*byte) {
+                return Err(Box::new(fmt::Error));
+            }
+        }
+        Ok(chunk)
     }
 }
 
