@@ -56,7 +56,15 @@ impl Chunk {
     /// 3. The data itself *(`length` bytes)*
     /// 4. The CRC of the chunk type and data *(4 bytes)*
     pub fn as_bytes(&self) -> Vec<u8> {
-        todo!();
+        let bytes = u32::to_le_bytes(self.length)
+            .iter()
+            .cloned()
+            .chain(self.chunk_type.bytes().iter().cloned())
+            .chain(self.chunk_data.iter().cloned())
+            .chain(u32::to_le_bytes(self.crc).iter().cloned())
+            .collect();
+
+        bytes
     }
 
     pub fn calc_crc(bytes: &[u8]) -> u32 {
