@@ -1,95 +1,74 @@
-use std::str::{
-    FromStr,
-};
+use std::convert::TryFrom;
 use std::fmt;
+use std::str::FromStr;
 
-#[derive(Eq, PartialEq, Copy, Clone, Debug)]
+use crate::{Error, Result};
+
+/// A validated PNG chunk type. See the PNG spec for more details.
+/// http://www.libpng.org/pub/png/spec/1.2/PNG-Structure.html
+#[derive(Debug, Clone, PartialEq, Eq)]
 pub struct ChunkType {
-    pub bytes: [u8; 4],
+    // Write me!
 }
 
-impl TryFrom<[u8; 4]> for ChunkType {
-    type Error = fmt::Error;
+impl ChunkType {
+    /// Returns the raw bytes contained in this chunk
+    pub fn bytes(&self) -> [u8; 4] {
+        todo!()
+    }
 
-    fn try_from(value: [u8; 4]) -> Result<Self, fmt::Error> {
-        for byte in value.iter() {
-            if byte > &255 {
-                return Err(fmt::Error)
-            }
-        }
-        Ok(Self { bytes: value })
+    /// Returns the property state of the first byte as described in the PNG spec
+    pub fn is_critical(&self) -> bool {
+        todo!()
+    }
+
+    /// Returns the property state of the second byte as described in the PNG spec
+    pub fn is_public(&self) -> bool {
+        todo!()
+    }
+
+    /// Returns the property state of the third byte as described in the PNG spec
+    pub fn is_reserved_bit_valid(&self) -> bool {
+        todo!()
+    }
+
+    /// Returns the property state of the fourth byte as described in the PNG spec
+    pub fn is_safe_to_copy(&self) -> bool {
+        todo!()
+    }
+
+    /// Returns true if the reserved byte is valid and all four bytes are represented by the characters A-Z or a-z.
+    /// Note that this chunk type should always be valid as it is validated during construction.
+    pub fn is_valid(&self) -> bool {
+        todo!()
+    }
+
+    /// Valid bytes are represented by the characters A-Z or a-z
+    pub fn is_valid_byte(byte: u8) -> bool {
+        todo!()
     }
 }
 
-impl FromStr for ChunkType {
-    type Err = fmt::Error;
+impl TryFrom<[u8; 4]> for ChunkType {
+    type Error = Error;
 
-    fn from_str(s: &str) -> Result<Self, fmt::Error> {
-        let chars = String::from(s).into_bytes();
-
-        let chunk = ChunkType {
-            bytes: chars.try_into().unwrap(),
-        };
-
-        if chunk.is_valid() {
-            return Ok(chunk);
-        } else {
-            return Err(fmt::Error);
-        }
+    fn try_from(bytes: [u8; 4]) -> Result<Self> {
+        todo!()
     }
 }
 
 impl fmt::Display for ChunkType {
-    fn fmt(&self, f: &mut fmt::Formatter) -> fmt::Result {
-        todo!();
+    fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
+        todo!()
     }
-    
 }
 
+impl FromStr for ChunkType {
+    type Err = Error;
 
-impl ChunkType {
-
-    fn bytes(&self) -> [u8; 4] {
-        self.bytes
+    fn from_str(s: &str) -> Result<Self> {
+        todo!()
     }
-
-
-    pub fn is_valid(&self) -> bool {
-        //! Need to seperate out the checking in range and checking reversed bit
-        let mut flag = true;
-        for byte in self.bytes.iter() {
-            if *byte >= 65 && *byte <= 90 {
-                flag = true;
-            }
-
-            if *byte >= 97 && *byte <= 122 {
-                flag = true;
-            }
-        }
-
-        // if !self.is_reserved_bit_valid() {
-        //     flag = false;
-        // }
-
-        flag
-    }
-
-    fn is_critical(&self) -> bool {
-        u8::is_ascii_uppercase(&self.bytes[0])
-    }
-
-    fn is_public(&self) -> bool {
-        u8::is_ascii_uppercase(&self.bytes[1]) 
-    }
-    
-    fn is_reserved_bit_valid(&self) -> bool {
-        u8::is_ascii_uppercase(&self.bytes[2])
-    }
-
-    fn is_safe_to_copy(&self) -> bool {
-        u8::is_ascii_lowercase(&self.bytes[3])
-    }
-
 }
 
 #[cfg(test)]
