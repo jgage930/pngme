@@ -5,24 +5,25 @@ use std::io::{BufReader, Read};
 use std::path::Path;
 use std::str::FromStr;
 
-use crate::{Error, Result};
 use crate::chunk::Chunk;
 use crate::chunk_type::ChunkType;
+use crate::{Error, Result};
 
 /// A PNG container as described by the PNG spec
 /// http://www.libpng.org/pub/png/spec/1.2/PNG-Contents.html
 #[derive(Debug)]
 pub struct Png {
     // Write me!
+    chunks: Vec<Chunk>,
 }
 
 impl Png {
     // Fill in this array with the correct values per the PNG spec
-    pub const STANDARD_HEADER: [u8; 8] = [0, 0, 0, 0, 0, 0, 0, 0];
+    pub const STANDARD_HEADER: [u8; 8] = [137, 80, 78, 71, 13, 10, 26, 10];
 
     /// Creates a `Png` from a list of chunks using the correct header
     pub fn from_chunks(chunks: Vec<Chunk>) -> Self {
-        todo!()
+        Png { chunks }
     }
 
     /// Creates a `Png` from a file path
@@ -32,7 +33,7 @@ impl Png {
 
     /// Appends a chunk to the end of this `Png` file's `Chunk` list.
     pub fn append_chunk(&mut self, chunk: Chunk) {
-        todo!()
+        self.chunks.push(chunk);
     }
 
     /// Searches for a `Chunk` with the specified `chunk_type` and removes the first
@@ -77,6 +78,7 @@ impl fmt::Display for Png {
         todo!()
     }
 }
+
 
 #[cfg(test)]
 mod tests {
