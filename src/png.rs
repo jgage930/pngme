@@ -75,7 +75,14 @@ impl Png {
     /// Returns this `Png` as a byte sequence.
     /// These bytes will contain the header followed by the bytes of all of the chunks.
     pub fn as_bytes(&self) -> Vec<u8> {
-        todo!()
+        let bytes: Vec<u8> = self
+            .chunks
+            .iter()
+            .map(|chunk| chunk.as_bytes())
+            .flatten()
+            .collect();
+
+        self.header().iter().chain(bytes.iter()).copied().collect()
     }
 }
 
