@@ -7,6 +7,7 @@ use std::str::FromStr;
 
 use crate::chunk;
 use crate::chunk::Chunk;
+use crate::chunk_type;
 use crate::chunk_type::ChunkType;
 use crate::{Error, Result};
 
@@ -40,12 +41,22 @@ impl Png {
     /// Searches for a `Chunk` with the specified `chunk_type` and removes the first
     /// matching `Chunk` from this `Png` list of chunks.
     pub fn remove_chunk(&mut self, chunk_type: &str) -> Result<Chunk> {
-        todo!();
+        let given_chunk = ChunkType::from_str(chunk_type).expect("invalid");
+
+        if let Some(pos) = self
+            .chunks
+            .iter()
+            .position(|c| c.chunk_type() == &given_chunk)
+        {
+            Ok(self.chunks.remove(pos))
+        } else {
+            Err(Box::new(fmt::Error))
+        }
     }
 
     /// The header of this PNG.
     pub fn header(&self) -> &[u8; 8] {
-        todo!()
+        &Self::STANDARD_HEADER
     }
 
     /// Lists the `Chunk`s stored in this `Png`
@@ -492,4 +503,3 @@ mod tests {
         160, 0, 0, 0, 0, 73, 69, 78, 68, 174, 66, 96, 130,
     ];
 }
-

@@ -11,7 +11,7 @@ const MAXIMUM_SIZE: u32 = (1 << 31) - 1;
 
 /// A validated PNG chunk. See the PNG Spec for more details
 /// http://www.libpng.org/pub/png/spec/1.2/PNG-Structure.html
-#[derive(Debug, Clone)]
+#[derive(Debug, Clone, PartialEq)]
 pub struct Chunk {
     length: u32,
     chunk_type: ChunkType,
