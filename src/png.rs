@@ -123,7 +123,11 @@ impl TryFrom<&[u8]> for Png {
 
 impl fmt::Display for Png {
     fn fmt(&self, f: &mut fmt::Formatter<'_>) -> fmt::Result {
-        todo!()
+        for chunk in &self.chunks {
+            write!(f, "{}", chunk)?;
+        }
+
+        Ok(())
     }
 }
 
