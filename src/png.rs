@@ -90,7 +90,34 @@ impl TryFrom<&[u8]> for Png {
     type Error = Error;
 
     fn try_from(bytes: &[u8]) -> Result<Png> {
-        todo!()
+        let mut reader = BufReader::new(bytes);
+
+        // read header
+        let mut header: [u8; 8] = [0; 8];
+
+        reader.read_exact(&mut header)?;
+        if header != Self::STANDARD_HEADER {
+            return Err(Box::new(fmt::Error));
+        }
+
+        let mut chunks = Vec::new();
+        let mut length_buffer: [u8; 4] = [0; 4];
+        while let Ok(()) = reader.read_exact(&mut length_buffer) {
+            let end = 4 + u32::from_be_bytes(length_buffer) + 4;
+            let mut buffer = vec![0; usize::try_from(end)?];
+
+            reader.read_exact(&mut buffer)?;
+            let bytes = length_buffer
+                .iter()
+                .copied()
+                .chain(buffer.into_iter())
+                .collect::<Vec<u8>>();
+
+            let chunk = Chunk::try_from(&bytes[..])?;
+            chunks.push(chunk);
+        }
+
+        Ok(Png::from_chunks(chunks))
     }
 }
 
