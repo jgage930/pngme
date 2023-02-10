@@ -26,8 +26,29 @@ pub struct EncodeArgs {
     output_file: PathBuf,
 }
 
-pub struct DecodeArgs {}
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+pub struct DecodeArgs {
+    #[arg(short, long, help = "Path to input file")]
+    file_path: PathBuf,
 
-pub struct RemoveArgs {}
+    #[arg(short, long)]
+    chunk_type: ChunkType,
+}
 
-pub struct PrintArgs {}
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+pub struct RemoveArgs {
+    #[arg(short, long, help = "Path to input file")]
+    file_path: PathBuf,
+
+    #[arg(short, long)]
+    chunk_type: ChunkType,
+}
+
+#[derive(Parser, Debug)]
+#[command(author, version, about, long_about = None)]
+pub struct PrintArgs {
+    #[arg(short, long, help = "Path to input file")]
+    file_path: PathBuf,
+}
