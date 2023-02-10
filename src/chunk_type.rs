@@ -1,8 +1,8 @@
+use clap::builder::{TypedValueParser, ValueParserFactory};
+use clap::error::ErrorKind;
 use std::convert::TryFrom;
 use std::fmt;
 use std::str::FromStr;
-
-use crate::{Error, Result};
 
 /// A validated PNG chunk type. See the PNG spec for more details.
 /// http://www.libpng.org/pub/png/spec/1.2/PNG-Structure.html
@@ -58,9 +58,9 @@ impl ChunkType {
 }
 
 impl TryFrom<[u8; 4]> for ChunkType {
-    type Error = Error;
+    type Error = fmt::Error;
 
-    fn try_from(bytes: [u8; 4]) -> Result<Self> {
+    fn try_from(bytes: [u8; 4]) -> Result<Self, fmt::Error> {
         Ok(Self { bytes })
     }
 }
@@ -75,11 +75,11 @@ impl fmt::Display for ChunkType {
 }
 
 impl FromStr for ChunkType {
-    type Err = Error;
+    type Err = fmt::Error;
 
-    fn from_str(s: &str) -> Result<Self> {
+    fn from_str(s: &str) -> Result<Self, fmt::Error> {
         if s.len() > 4 {
-            return Err(Box::new(fmt::Error));
+            return Err(fmt::Error);
         }
 
         let bytes = s.as_bytes();
@@ -89,10 +89,37 @@ impl FromStr for ChunkType {
 
         for byte in chunk.bytes.iter() {
             if !ChunkType::is_valid_byte(*byte) {
-                return Err(Box::new(fmt::Error));
+                return Err(fmt::Error);
             }
         }
         Ok(chunk)
+    }
+}
+
+impl ValueParserFactory for ChunkType {
+    type Parser = ChunkTypeParser;
+
+    fn value_parser() -> Self::Parser {
+        ChunkTypeParser
+    }
+}
+
+#[derive(Clone, Debug)]
+pub struct ChunkTypeParser;
+
+impl TypedValueParser for ChunkTypeParser {
+    type Value = ChunkType;
+
+    fn parse_ref(
+        &self,
+        cmd: &clap::Command,
+        arg: Option<&clap::Arg>,
+        value: &std::ffi::OsStr,
+    ) -> Result<Self::Value, clap::Error> {
+        match value.to_str() {
+            Some(value) => Ok(ChunkType::from_str(value)?),
+            None => Err(clap::Error::new(ErrorKind::ValueValidation)),
+        }
     }
 }
 
@@ -194,4 +221,3 @@ mod tests {
         let _are_chunks_equal = chunk_type_1 == chunk_type_2;
     }
 }
-
