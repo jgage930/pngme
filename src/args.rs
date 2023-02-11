@@ -20,30 +20,25 @@ pub enum PngMeArgs {
 
 #[derive(Debug, Args)]
 pub struct EncodeArgs {
-    file_path: PathBuf,
-
-    chunk_type: ChunkType,
-
-    message: String,
-
-    output_file: PathBuf,
+    pub file_path: PathBuf,
+    pub chunk_type: ChunkType,
+    pub message: String,
+    pub output_file: PathBuf,
 }
 
 #[derive(Args, Debug)]
 pub struct DecodeArgs {
-    file_path: PathBuf,
-
-    chunk_type: ChunkType,
+    pub file_path: PathBuf,
+    pub chunk_type: ChunkType,
 }
 
 #[derive(Args, Debug)]
 pub struct RemoveArgs {
-    file_path: PathBuf,
-
-    chunk_type: ChunkType,
+    pub file_path: PathBuf,
+    pub chunk_type: ChunkType,
 }
 
 #[derive(Args, Debug)]
 pub struct PrintArgs {
-    file_path: PathBuf,
+    pub file_path: PathBuf,
 }
