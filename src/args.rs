@@ -1,8 +1,16 @@
-use clap::Parser;
+use clap::{Args, Parser, Subcommand};
 use std::path::PathBuf;
 
 use crate::chunk_type::ChunkType;
 
+#[derive(Debug, Parser)]
+#[clap(author, version, about)]
+pub struct Cli {
+    #[clap(subcommand)]
+    pub arg: PngMeArgs,
+}
+
+#[derive(Debug, Subcommand)]
 pub enum PngMeArgs {
     Encode(EncodeArgs),
     Decode(DecodeArgs),
@@ -10,45 +18,32 @@ pub enum PngMeArgs {
     Print(PrintArgs),
 }
 
-#[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
+#[derive(Debug, Args)]
 pub struct EncodeArgs {
-    #[arg(short, long, help = "Path to input file")]
     file_path: PathBuf,
 
-    #[arg(short, long)]
     chunk_type: ChunkType,
 
-    #[arg(short, long)]
     message: String,
 
-    #[arg(short, long)]
     output_file: PathBuf,
 }
 
-#[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
+#[derive(Args, Debug)]
 pub struct DecodeArgs {
-    #[arg(short, long, help = "Path to input file")]
     file_path: PathBuf,
 
-    #[arg(short, long)]
     chunk_type: ChunkType,
 }
 
-#[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
+#[derive(Args, Debug)]
 pub struct RemoveArgs {
-    #[arg(short, long, help = "Path to input file")]
     file_path: PathBuf,
 
-    #[arg(short, long)]
     chunk_type: ChunkType,
 }
 
-#[derive(Parser, Debug)]
-#[command(author, version, about, long_about = None)]
+#[derive(Args, Debug)]
 pub struct PrintArgs {
-    #[arg(short, long, help = "Path to input file")]
     file_path: PathBuf,
 }
